@@ -16,31 +16,67 @@
     --loto-blue:    #38BDF8;
     --loto-blue-hi: #7DD3FC;
     --loto-blue-lo: #075985;
-    --bg:           #0D0B10;
-    --surface:      rgba(255,255,255,.032);
-    --border:       rgba(255,255,255,.07);
     --text-hi:      #FFFFFF;
-    --text-mid:     rgba(255,255,255,.50);
-    --text-lo:      rgba(255,255,255,.28);
+    --text-mid:     rgba(255,255,255,.55);
+    --text-lo:      rgba(255,255,255,.32);
+    --surface:      rgba(255,255,255,.06);
+    --border:       rgba(255,255,255,.10);
   }
-  html, body { width:100%; height:100%; background:var(--bg); overflow:hidden; font-family:'Barlow',sans-serif; }
+  html, body { width:100%; height:100%; overflow:hidden; font-family:'Barlow',sans-serif; }
+ 
+  /* ── BACKGROUND: laranja escuro → verde escuro, diagonal ── */
   .bg-layer {
     position:fixed; inset:0; z-index:0; pointer-events:none;
-    background:
-      radial-gradient(ellipse 70% 60% at -8% 108%,  rgba(232,80,10,.30)  0%, transparent 55%),
-      radial-gradient(ellipse 90% 30% at 50%  115%,  rgba(160,48,4,.16)   0%, transparent 50%),
-      radial-gradient(ellipse 50% 55% at 8%   8%,    rgba(255,200,0,.06)  0%, transparent 55%),
-      radial-gradient(ellipse 50% 55% at 92%  8%,    rgba(56,189,248,.05) 0%, transparent 55%),
-      radial-gradient(ellipse 100% 100% at 50% 50%,  transparent 35%, rgba(5,4,8,.88) 100%);
-    animation: bgBreath 11s ease-in-out infinite alternate;
+    /* Base diagonal: laranja escuro (esq/topo) → verde escuro (dir/baixo) */
+    background: linear-gradient(135deg, #1A0A00 0%, #0A1A08 100%);
   }
-  @keyframes bgBreath { 0%{opacity:.6} 100%{opacity:1} }
-  .dot-grid { position:fixed; inset:0; z-index:0; pointer-events:none; background-image:radial-gradient(rgba(255,255,255,.038) 1px,transparent 1px); background-size:38px 38px; }
+  /* Camadas de luz para dar profundidade */
+  .bg-layer::before {
+    content:''; position:absolute; inset:0;
+    background:
+      /* laranja quente — canto superior esquerdo */
+      radial-gradient(ellipse 75% 65% at -5% -5%,   rgba(200,65,0,.55)   0%, transparent 55%),
+      /* laranja suave — centro esquerdo */
+      radial-gradient(ellipse 55% 70% at 0%   55%,  rgba(160,45,0,.30)   0%, transparent 55%),
+      /* verde — canto inferior direito */
+      radial-gradient(ellipse 75% 65% at 105% 105%, rgba(0,100,30,.55)   0%, transparent 55%),
+      /* verde suave — centro direito */
+      radial-gradient(ellipse 55% 70% at 100% 45%,  rgba(0,80,20,.30)    0%, transparent 55%),
+      /* centro escuro para contraste máximo dos jackpots */
+      radial-gradient(ellipse 60% 50% at 50%  50%,  rgba(0,0,0,.35)      0%, transparent 70%);
+    animation: bgBreath 12s ease-in-out infinite alternate;
+  }
+  @keyframes bgBreath { 0%{opacity:.7} 100%{opacity:1} }
+ 
+  /* grain subtil */
+  .bg-layer::after {
+    content:''; position:absolute; inset:0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 160px 160px; opacity:.03; mix-blend-mode:overlay;
+  }
+ 
+  .dot-grid {
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image: radial-gradient(rgba(255,255,255,.055) 1px, transparent 1px);
+    background-size: 38px 38px;
+  }
+ 
   .screen { position:relative; z-index:1; width:100vw; height:100vh; display:grid; grid-template-rows:auto 1fr auto; }
  
-  .header { display:flex; align-items:center; justify-content:space-between; padding:.6rem 2.2rem; border-bottom:1px solid rgba(255,255,255,.06); background:rgba(8,6,12,.55); backdrop-filter:blur(20px); gap:1.5rem; }
-  .logo-wrap img { height:40px; filter:brightness(0) invert(1); opacity:.88; display:block; }
-  .header-title { font-family:'Barlow Condensed',sans-serif; font-size:1.55rem; font-weight:800; letter-spacing:.32em; text-transform:uppercase; flex:1; text-align:center; background:linear-gradient(90deg,var(--orange-hi),var(--euro-gold),var(--loto-blue)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  /* ── HEADER ── */
+  .header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:.6rem 2.2rem; border-bottom:1px solid rgba(255,255,255,.08);
+    background:rgba(0,0,0,.38); backdrop-filter:blur(20px); gap:1.5rem;
+  }
+  .logo-wrap img { height:40px; filter:brightness(0) invert(1); opacity:.9; display:block; }
+  .header-title {
+    font-family:'Barlow Condensed',sans-serif;
+    font-size:1.55rem; font-weight:800; letter-spacing:.32em; text-transform:uppercase;
+    flex:1; text-align:center;
+    background:linear-gradient(90deg, #FF8C42, var(--euro-gold), #6EE7A0);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  }
   .header-right { display:flex; align-items:center; gap:.8rem; min-width:220px; justify-content:flex-end; }
   .status { display:flex; align-items:center; gap:.4rem; }
   .status-dot { width:7px; height:7px; border-radius:50%; background:#22C55E; box-shadow:0 0 8px #22C55E; animation:dotPulse 2.5s ease-in-out infinite; }
@@ -48,42 +84,51 @@
   .status-dot.error   { background:#EF4444; box-shadow:0 0 8px #EF4444; }
   @keyframes dotPulse { 0%,100%{opacity:1} 50%{opacity:.3} }
   .status-txt { font-family:'Barlow Condensed',sans-serif; font-size:.72rem; font-weight:600; letter-spacing:.07em; color:var(--text-lo); white-space:nowrap; }
-  .clock { font-family:'Bebas Neue',cursive; font-size:1.35rem; letter-spacing:.1em; color:rgba(255,255,255,.38); }
+  .clock { font-family:'Bebas Neue',cursive; font-size:1.35rem; letter-spacing:.1em; color:rgba(255,255,255,.45); }
   .btn-refresh, .btn-edit { font-family:'Barlow Condensed',sans-serif; font-size:.72rem; font-weight:700; letter-spacing:.1em; padding:.3rem .75rem; border-radius:999px; cursor:pointer; border:none; transition:all .18s; text-transform:uppercase; }
-  .btn-refresh { background:rgba(255,255,255,.08); color:rgba(255,255,255,.45); border:1px solid rgba(255,255,255,.12); }
-  .btn-refresh:hover { background:rgba(255,255,255,.15); color:#fff; }
-  .btn-edit { background:rgba(232,80,10,.18); color:var(--orange-hi); border:1px solid rgba(232,80,10,.3); }
-  .btn-edit:hover { background:rgba(232,80,10,.32); color:#fff; }
+  .btn-refresh { background:rgba(255,255,255,.10); color:rgba(255,255,255,.5); border:1px solid rgba(255,255,255,.15); }
+  .btn-refresh:hover { background:rgba(255,255,255,.18); color:#fff; }
+  .btn-edit { background:rgba(232,80,10,.22); color:var(--orange-hi); border:1px solid rgba(232,80,10,.35); }
+  .btn-edit:hover { background:rgba(232,80,10,.38); color:#fff; }
  
+  /* ── CARDS ── */
   .cards { display:grid; grid-template-rows:1fr 1fr; gap:.8rem; padding:.8rem 1.6rem; }
-  .card { position:relative; background:var(--surface); border:1px solid var(--border); border-radius:18px; overflow:hidden; display:flex; flex-direction:column; animation:cardIn .85s cubic-bezier(.16,1,.3,1) both; }
+  .card {
+    position:relative; background:var(--surface); border:1px solid var(--border);
+    border-radius:18px; overflow:hidden; display:flex; flex-direction:column;
+    animation:cardIn .85s cubic-bezier(.16,1,.3,1) both;
+    /* glass morphism suave */
+    backdrop-filter: blur(6px);
+  }
   .card:nth-child(1){ animation-delay:.06s; }
   .card:nth-child(2){ animation-delay:.2s; }
   @keyframes cardIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+ 
   .card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; border-radius:18px 18px 0 0; z-index:2; }
   .card.euro::before { background:linear-gradient(90deg,var(--euro-gold-lo),var(--euro-gold),var(--euro-gold-lo)); }
   .card.loto::before { background:linear-gradient(90deg,var(--loto-blue-lo),var(--loto-blue),var(--loto-blue-lo)); }
-  .card-glow { position:absolute; pointer-events:none; z-index:0; top:50%; left:50%; transform:translate(-50%,-50%); width:80%; height:220%; border-radius:50%; opacity:.07; animation:glowBreathe 6s ease-in-out infinite; }
+ 
+  .card-glow { position:absolute; pointer-events:none; z-index:0; top:50%; left:50%; transform:translate(-50%,-50%); width:80%; height:220%; border-radius:50%; opacity:.08; animation:glowBreathe 6s ease-in-out infinite; }
   .card.euro .card-glow { background:radial-gradient(var(--euro-gold),transparent 65%); }
   .card.loto .card-glow { background:radial-gradient(var(--loto-blue),transparent 65%); animation-delay:3s; }
-  @keyframes glowBreathe { 0%,100%{opacity:.06} 50%{opacity:.14} }
+  @keyframes glowBreathe { 0%,100%{opacity:.06} 50%{opacity:.15} }
  
   .card-top { position:relative; z-index:1; display:flex; align-items:center; gap:.8rem; padding:.6rem 1.8rem .1rem; flex-shrink:0; }
   .gname { font-family:'Bebas Neue',cursive; font-size:clamp(1.5rem,2.5vw,2.3rem); letter-spacing:.05em; color:var(--text-hi); line-height:1; }
   .badge { font-family:'Barlow Condensed',sans-serif; font-size:.62rem; font-weight:800; letter-spacing:.18em; text-transform:uppercase; padding:.16rem .5rem; border-radius:999px; }
-  .card.euro .badge { background:rgba(255,215,0,.12); color:var(--euro-gold); border:1px solid rgba(255,215,0,.22); }
-  .card.loto .badge { background:rgba(56,189,248,.12); color:var(--loto-blue); border:1px solid rgba(56,189,248,.22); }
+  .card.euro .badge { background:rgba(255,215,0,.14); color:var(--euro-gold); border:1px solid rgba(255,215,0,.28); }
+  .card.loto .badge { background:rgba(56,189,248,.14); color:var(--loto-blue); border:1px solid rgba(56,189,248,.28); }
  
   .card-jackpot { position:relative; z-index:1; flex:1; display:flex; flex-direction:column; align-items:flex-start; justify-content:center; padding:0 1.8rem; margin-top:-.3rem; }
   .jlabel { font-family:'Barlow Condensed',sans-serif; font-size:.65rem; font-weight:700; letter-spacing:.25em; text-transform:uppercase; color:var(--text-lo); margin-bottom:.08rem; }
   .jvalue { font-family:'Bebas Neue',cursive; font-size:clamp(5rem,13vh,12rem); line-height:.9; letter-spacing:.02em; }
   .card.euro .jvalue { color:var(--euro-gold); animation:euroGlow 4s ease-in-out infinite; }
   .card.loto .jvalue { color:var(--loto-blue); animation:lotoGlow 4s ease-in-out infinite 2s; }
-  @keyframes euroGlow { 0%,100%{text-shadow:0 0 30px rgba(255,215,0,.15)} 50%{text-shadow:0 0 90px rgba(255,215,0,.72),0 0 30px rgba(255,215,0,.48)} }
-  @keyframes lotoGlow { 0%,100%{text-shadow:0 0 30px rgba(56,189,248,.15)} 50%{text-shadow:0 0 90px rgba(56,189,248,.72),0 0 30px rgba(56,189,248,.48)} }
+  @keyframes euroGlow { 0%,100%{text-shadow:0 0 30px rgba(255,215,0,.18)} 50%{text-shadow:0 0 90px rgba(255,215,0,.75),0 0 30px rgba(255,215,0,.5)} }
+  @keyframes lotoGlow { 0%,100%{text-shadow:0 0 30px rgba(56,189,248,.18)} 50%{text-shadow:0 0 90px rgba(56,189,248,.75),0 0 30px rgba(56,189,248,.5)} }
   .jcur { font-size:.38em; opacity:.62; vertical-align:super; margin-right:.05em; }
  
-  .card-bottom { position:relative; z-index:1; flex-shrink:0; display:grid; grid-template-columns:1fr 1px 1fr; border-top:1px solid rgba(255,255,255,.06); }
+  .card-bottom { position:relative; z-index:1; flex-shrink:0; display:grid; grid-template-columns:1fr 1px 1fr; border-top:1px solid rgba(255,255,255,.08); }
   .bottom-left { display:flex; align-items:center; justify-content:space-between; padding:.55rem 1.4rem .6rem 1.8rem; gap:1rem; }
   .bl-col { display:flex; flex-direction:column; gap:.1rem; }
   .bl-label { font-family:'Barlow Condensed',sans-serif; font-size:.58rem; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--text-lo); }
@@ -91,7 +136,7 @@
   .countdown { font-family:'Bebas Neue',cursive; font-size:1.55rem; letter-spacing:.07em; line-height:1; }
   .card.euro .countdown { color:var(--euro-gold); }
   .card.loto .countdown { color:var(--loto-blue); }
-  .bottom-div { background:rgba(255,255,255,.06); margin:.45rem 0; }
+  .bottom-div { background:rgba(255,255,255,.08); margin:.45rem 0; }
   .bottom-right { display:flex; align-items:center; padding:.5rem 1.8rem .5rem 1.4rem; gap:.65rem; }
   .br-label { font-family:'Barlow Condensed',sans-serif; font-size:.58rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--text-lo); white-space:nowrap; flex-shrink:0; }
  
@@ -99,34 +144,36 @@
   .ball { width:clamp(1.75rem,2.7vw,2.4rem); height:clamp(1.75rem,2.7vw,2.4rem); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Barlow Condensed',sans-serif; font-size:clamp(.68rem,1vw,.86rem); font-weight:800; animation:ballPop .5s cubic-bezier(.34,1.56,.64,1) both; flex-shrink:0; }
   .ball:nth-child(1){animation-delay:.10s} .ball:nth-child(2){animation-delay:.18s} .ball:nth-child(3){animation-delay:.26s} .ball:nth-child(4){animation-delay:.34s} .ball:nth-child(5){animation-delay:.42s} .ball:nth-child(6){animation-delay:.52s} .ball:nth-child(7){animation-delay:.60s}
   @keyframes ballPop { from{opacity:0;transform:scale(.25) rotate(-25deg)} to{opacity:1;transform:scale(1) rotate(0)} }
-  .euro .ball.main { background:radial-gradient(circle at 33% 30%,var(--euro-gold-hi),#8A6000); color:#1a0d00; box-shadow:0 2px 10px rgba(255,215,0,.30); }
-  .euro .ball.star { background:radial-gradient(circle at 33% 30%,#8EC8F8,var(--euro-star-dk)); color:#fff; box-shadow:0 2px 10px rgba(90,171,248,.30); }
-  .loto .ball.main { background:radial-gradient(circle at 33% 30%,var(--loto-blue-hi),#0A4F78); color:#fff; box-shadow:0 2px 10px rgba(56,189,248,.30); }
-  .loto .ball.compl{ background:radial-gradient(circle at 33% 30%,#94A3B8,#2D3748); color:#fff; box-shadow:0 2px 8px rgba(0,0,0,.30); }
-  .ball-sep { font-family:'Bebas Neue',cursive; font-size:.95rem; color:rgba(255,255,255,.18); flex-shrink:0; margin:0 .04rem; }
+  .euro .ball.main { background:radial-gradient(circle at 33% 30%,var(--euro-gold-hi),#8A6000); color:#1a0d00; box-shadow:0 2px 10px rgba(255,215,0,.35); }
+  .euro .ball.star { background:radial-gradient(circle at 33% 30%,#8EC8F8,var(--euro-star-dk)); color:#fff; box-shadow:0 2px 10px rgba(90,171,248,.35); }
+  .loto .ball.main { background:radial-gradient(circle at 33% 30%,var(--loto-blue-hi),#0A4F78); color:#fff; box-shadow:0 2px 10px rgba(56,189,248,.35); }
+  .loto .ball.compl{ background:radial-gradient(circle at 33% 30%,#94A3B8,#2D3748); color:#fff; box-shadow:0 2px 8px rgba(0,0,0,.35); }
+  .ball-sep { font-family:'Bebas Neue',cursive; font-size:.95rem; color:rgba(255,255,255,.25); flex-shrink:0; margin:0 .04rem; }
  
-  .skel { background:linear-gradient(90deg,rgba(255,255,255,.05) 25%,rgba(255,255,255,.09) 50%,rgba(255,255,255,.05) 75%); background-size:200% 100%; animation:shimmer 1.6s infinite; border-radius:5px; display:inline-block; }
+  .skel { background:linear-gradient(90deg,rgba(255,255,255,.06) 25%,rgba(255,255,255,.12) 50%,rgba(255,255,255,.06) 75%); background-size:200% 100%; animation:shimmer 1.6s infinite; border-radius:5px; display:inline-block; }
   @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
  
-  .footer { display:flex; align-items:center; justify-content:center; gap:.65rem; padding:.42rem; border-top:1px solid rgba(255,255,255,.05); background:rgba(0,0,0,.35); }
-  .ftxt { font-family:'Barlow',sans-serif; font-size:.63rem; color:rgba(255,255,255,.18); letter-spacing:.07em; text-transform:uppercase; }
-  .fdot { color:rgba(255,255,255,.1); }
-  .fupd { font-family:'Barlow Condensed',sans-serif; font-size:.7rem; color:rgba(255,255,255,.25); letter-spacing:.05em; }
+  /* ── FOOTER ── */
+  .footer { display:flex; align-items:center; justify-content:center; gap:.65rem; padding:.42rem; border-top:1px solid rgba(255,255,255,.07); background:rgba(0,0,0,.28); }
+  .ftxt { font-family:'Barlow',sans-serif; font-size:.63rem; color:rgba(255,255,255,.22); letter-spacing:.07em; text-transform:uppercase; }
+  .fdot { color:rgba(255,255,255,.12); }
+  .fupd { font-family:'Barlow Condensed',sans-serif; font-size:.7rem; color:rgba(255,255,255,.28); letter-spacing:.05em; }
  
-  .overlay { display:none; position:fixed; inset:0; z-index:500; background:rgba(0,0,0,.85); backdrop-filter:blur(10px); align-items:center; justify-content:center; }
+  /* ── MODAL ── */
+  .overlay { display:none; position:fixed; inset:0; z-index:500; background:rgba(0,0,0,.88); backdrop-filter:blur(10px); align-items:center; justify-content:center; }
   .overlay.open { display:flex; }
-  .modal { background:#16141E; border:1px solid rgba(255,255,255,.12); border-radius:20px; padding:2rem 2.2rem; width:560px; max-width:95vw; box-shadow:0 30px 80px rgba(0,0,0,.6); }
+  .modal { background:#0E1A0E; border:1px solid rgba(255,255,255,.13); border-radius:20px; padding:2rem 2.2rem; width:560px; max-width:95vw; box-shadow:0 30px 80px rgba(0,0,0,.7); }
   .modal h2 { font-family:'Bebas Neue',cursive; font-size:1.8rem; letter-spacing:.06em; color:#fff; margin-bottom:.3rem; }
   .modal-sub { font-family:'Barlow Condensed',sans-serif; font-size:.75rem; color:var(--text-lo); letter-spacing:.08em; margin-bottom:1.5rem; }
-  .modal-section { font-family:'Barlow Condensed',sans-serif; font-size:.68rem; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:var(--text-lo); margin:1.1rem 0 .6rem; padding-bottom:.35rem; border-bottom:1px solid rgba(255,255,255,.07); }
+  .modal-section { font-family:'Barlow Condensed',sans-serif; font-size:.68rem; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:var(--text-lo); margin:1.1rem 0 .6rem; padding-bottom:.35rem; border-bottom:1px solid rgba(255,255,255,.08); }
   .modal-grid { display:grid; grid-template-columns:1fr 1fr; gap:.8rem; }
-  .fg label { display:block; font-family:'Barlow Condensed',sans-serif; font-size:.68rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.35); margin-bottom:.28rem; }
-  .fg input { width:100%; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.10); border-radius:8px; padding:.5rem .75rem; color:#fff; font-family:'Barlow',sans-serif; font-size:.95rem; outline:none; transition:border-color .2s; }
-  .fg input:focus { border-color:rgba(255,255,255,.28); }
+  .fg label { display:block; font-family:'Barlow Condensed',sans-serif; font-size:.68rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.38); margin-bottom:.28rem; }
+  .fg input { width:100%; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12); border-radius:8px; padding:.5rem .75rem; color:#fff; font-family:'Barlow',sans-serif; font-size:.95rem; outline:none; transition:border-color .2s; }
+  .fg input:focus { border-color:rgba(255,255,255,.3); }
   .modal-actions { display:flex; gap:.7rem; margin-top:1.6rem; justify-content:flex-end; }
   .mbtn { font-family:'Barlow Condensed',sans-serif; font-size:.9rem; font-weight:700; letter-spacing:.07em; padding:.5rem 1.3rem; border-radius:8px; cursor:pointer; border:none; transition:all .18s; }
-  .mbtn-cancel { background:rgba(255,255,255,.07); color:rgba(255,255,255,.5); }
-  .mbtn-cancel:hover { background:rgba(255,255,255,.13); color:#fff; }
+  .mbtn-cancel { background:rgba(255,255,255,.08); color:rgba(255,255,255,.5); }
+  .mbtn-cancel:hover { background:rgba(255,255,255,.14); color:#fff; }
   .mbtn-save { background:var(--euro-gold); color:#1a0d00; font-weight:800; }
   .mbtn-save:hover { background:var(--euro-gold-hi); }
 </style>
@@ -165,7 +212,7 @@
         </div>
         <div class="bottom-div"></div>
         <div class="bottom-right">
-          <span class="br-label">Último Sorteio<br><span id="euro-draw-date" style="color:rgba(255,255,255,.2);font-weight:400;letter-spacing:.04em">—</span></span>
+          <span class="br-label">Último Sorteio<br><span id="euro-draw-date" style="color:rgba(255,255,255,.22);font-weight:400;letter-spacing:.04em">—</span></span>
           <div class="balls-row" id="euro-balls">
             <span class="skel" style="width:2.1rem;height:2.1rem;border-radius:50%;display:inline-block">&nbsp;</span>
             <span class="skel" style="width:2.1rem;height:2.1rem;border-radius:50%;display:inline-block">&nbsp;</span>
@@ -191,7 +238,7 @@
         </div>
         <div class="bottom-div"></div>
         <div class="bottom-right">
-          <span class="br-label">Último Sorteio<br><span id="loto-draw-date" style="color:rgba(255,255,255,.2);font-weight:400;letter-spacing:.04em">—</span></span>
+          <span class="br-label">Último Sorteio<br><span id="loto-draw-date" style="color:rgba(255,255,255,.22);font-weight:400;letter-spacing:.04em">—</span></span>
           <div class="balls-row" id="loto-balls">
             <span class="skel" style="width:2.1rem;height:2.1rem;border-radius:50%;display:inline-block">&nbsp;</span>
             <span class="skel" style="width:2.1rem;height:2.1rem;border-radius:50%;display:inline-block">&nbsp;</span>
@@ -243,137 +290,50 @@ const WORKER_URL = 'https://lubriolhao-proxy.danielm-viegas.workers.dev';
 const DAYS_PT   = ["Domingo","Segunda-feira","Terça-feira","Quarta-feira","Quinta-feira","Sexta-feira","Sábado"];
 const MONTHS_PT = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
  
-// ── NEXT DRAW — calculado em hora de Lisboa (Europe/Lisbon) ──────────────────
-//
-// Euromilhões: terça (2) às 19:00 e sexta (5) às 19:00 Lisboa
-// Totoloto:    quarta (3) às 20:30 e sábado (6) às 20:30 Lisboa
-//
-// A lógica:
-//   1. Obter hora actual em Lisboa via Intl
-//   2. Para cada dia de sorteio, construir a data/hora exata do próximo sorteio
-//   3. Devolver o mais próximo no futuro
- 
-function nowLisboa() {
-  // Devolve um objecto com {year, month, day, weekday, hour, minute} em hora de Lisboa
-  const now = new Date();
-  const parts = new Intl.DateTimeFormat('pt-PT', {
-    timeZone: 'Europe/Lisbon',
-    year:'numeric', month:'2-digit', day:'2-digit',
-    hour:'2-digit', minute:'2-digit', second:'2-digit',
-    hour12: false
-  }).formatToParts(now);
-  const p = {};
-  parts.forEach(x => { p[x.type] = x.value; });
-  return {
-    year:   parseInt(p.year),
-    month:  parseInt(p.month) - 1, // 0-indexed
-    day:    parseInt(p.day),
-    hour:   parseInt(p.hour),
-    minute: parseInt(p.minute),
-    second: parseInt(p.second),
-    // reconstruct a Date in Lisboa midnight for day arithmetic
-    _now: now
-  };
-}
- 
 function nextDrawDate(drawDow, drawHour, drawMinute) {
-  // drawDow: 0=Dom,1=Seg,2=Ter,3=Qua,4=Qui,5=Sex,6=Sáb
-  // drawHour, drawMinute: hora Lisboa
   const now = new Date();
- 
-  // Build today's draw time in Lisboa timezone
-  // We iterate days until we find the next valid slot
   for (let addDays = 0; addDays <= 7; addDays++) {
     const candidate = new Date(now.getTime() + addDays * 86400000);
-    // Get Lisboa weekday and hour for this candidate
     const lParts = new Intl.DateTimeFormat('en-US', {
-      timeZone: 'Europe/Lisbon',
-      weekday: 'short', year:'numeric', month:'2-digit', day:'2-digit',
-      hour:'2-digit', minute:'2-digit', hour12: false
+      timeZone: 'Europe/Lisbon', weekday:'short', year:'numeric',
+      month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', hour12:false
     }).formatToParts(candidate);
     const lp = {};
     lParts.forEach(x => { lp[x.type] = x.value; });
     const dowMap = {Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6};
-    const candidateDow = dowMap[lp.weekday];
- 
-    if (candidateDow === drawDow) {
-      // Build the exact draw moment in UTC for this Lisboa date
-      // Use the Lisboa date parts to construct an ISO string and convert
-      const lYear  = parseInt(lp.year);
-      const lMonth = parseInt(lp.month) - 1;
-      const lDay   = parseInt(lp.day);
- 
-      // Create a date at the draw time in Lisboa — use the offset trick
+    if (dowMap[lp.weekday] === drawDow) {
+      const lYear=parseInt(lp.year), lMonth=parseInt(lp.month)-1, lDay=parseInt(lp.day);
       const drawLocal = new Date(Date.UTC(lYear, lMonth, lDay, drawHour, drawMinute, 0));
-      // Adjust for Lisboa offset: get the offset at that moment
-      const lisboaOffset = getLisboaOffsetMinutes(drawLocal);
+      const lisboaOffset = getLisboaOffset(drawLocal);
       const drawUTC = new Date(drawLocal.getTime() - lisboaOffset * 60000);
- 
-      if (drawUTC > now) {
-        return drawUTC;
-      }
+      if (drawUTC > now) return drawUTC;
     }
   }
   return null;
 }
  
-function getLisboaOffsetMinutes(date) {
-  // Returns Lisboa UTC offset in minutes at a given date (handles DST)
-  const utcStr = date.toLocaleString('en-US', { timeZone: 'UTC' });
-  const lisStr = date.toLocaleString('en-US', { timeZone: 'Europe/Lisbon' });
-  const utcD = new Date(utcStr);
-  const lisD = new Date(lisStr);
-  return (lisD - utcD) / 60000;
+function getLisboaOffset(date) {
+  const utcStr = date.toLocaleString('en-US', { timeZone:'UTC' });
+  const lisStr = date.toLocaleString('en-US', { timeZone:'Europe/Lisbon' });
+  return (new Date(lisStr) - new Date(utcStr)) / 60000;
 }
  
 function fmtDrawDate(d) {
   if (!d) return '—';
-  // Format in Lisboa timezone
-  return d.toLocaleDateString('pt-PT', {
-    timeZone: 'Europe/Lisbon',
-    weekday: 'long', day: 'numeric', month: 'short'
-  });
+  return d.toLocaleDateString('pt-PT', { timeZone:'Europe/Lisbon', weekday:'long', day:'numeric', month:'short' });
 }
- 
 function fmtMoney(n) { return n==null?'N/D':Number(n).toLocaleString('pt-PT'); }
- 
 function countdown(target) {
   const diff = target - Date.now();
   if (diff <= 0) return 'A decorrer';
-  const h = Math.floor(diff / 3600000);
-  const m = Math.floor((diff % 3600000) / 60000);
-  const s = Math.floor((diff % 60000) / 1000);
+  const h=Math.floor(diff/3600000), m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
   return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
 }
  
-// Euromilhões: terça 19:00 e sexta 19:00
-function nextEuro() {
-  const tue = nextDrawDate(2, 19, 0);
-  const fri = nextDrawDate(5, 19, 0);
-  if (!tue) return fri;
-  if (!fri) return tue;
-  return tue < fri ? tue : fri;
-}
+function nextEuro() { const t=nextDrawDate(2,19,0), f=nextDrawDate(5,19,0); if(!t)return f; if(!f)return t; return t<f?t:f; }
+function nextLoto() { const q=nextDrawDate(3,20,30), s=nextDrawDate(6,20,30); if(!q)return s; if(!s)return q; return q<s?q:s; }
  
-// Totoloto: quarta 20:30 e sábado 20:30
-function nextLoto() {
-  const wed = nextDrawDate(3, 20, 30);
-  const sat = nextDrawDate(6, 20, 30);
-  if (!wed) return sat;
-  if (!sat) return wed;
-  return wed < sat ? wed : sat;
-}
- 
-let draws = { euro: nextEuro(), loto: nextLoto() };
- 
-// Actualizar alvos à meia-noite
-setInterval(() => {
-  const now = new Date();
-  if (now.getHours()===0 && now.getMinutes()===0 && now.getSeconds()===0) {
-    draws = { euro: nextEuro(), loto: nextLoto() };
-    updateDrawLabels();
-  }
-}, 1000);
+let draws = { euro:nextEuro(), loto:nextLoto() };
  
 function updateDrawLabels() {
   document.getElementById('euro-next-draw').textContent = fmtDrawDate(draws.euro);
@@ -381,107 +341,96 @@ function updateDrawLabels() {
 }
 updateDrawLabels();
  
-// ── RENDER BALLS ─────────────────────────────────────────────────────────────
 function renderBalls(id, mains, specials, specClass) {
-  const row = document.getElementById(id); row.innerHTML = '';
-  (mains||[]).forEach(n => { const b=document.createElement('div'); b.className='ball main'; b.textContent=n; row.appendChild(b); });
-  if (specials && specials.length) {
+  const row=document.getElementById(id); row.innerHTML='';
+  (mains||[]).forEach(n=>{ const b=document.createElement('div'); b.className='ball main'; b.textContent=n; row.appendChild(b); });
+  if(specials&&specials.length){
     const sep=document.createElement('span'); sep.className='ball-sep'; sep.textContent='+'; row.appendChild(sep);
-    specials.forEach(n => { const b=document.createElement('div'); b.className='ball '+specClass; b.textContent=n; row.appendChild(b); });
+    specials.forEach(n=>{ const b=document.createElement('div'); b.className='ball '+specClass; b.textContent=n; row.appendChild(b); });
   }
 }
  
-// ── STATUS ────────────────────────────────────────────────────────────────────
-function setStatus(state, txt) {
+function setStatus(state,txt) {
   document.getElementById('statusDot').className='status-dot'+(state==='ok'?'':' '+state);
   document.getElementById('statusTxt').textContent=txt;
 }
  
-// ── APPLY DATA ────────────────────────────────────────────────────────────────
 function applyData(d) {
-  if (d.euromilhoes) {
-    const e = d.euromilhoes;
-    if (e.jackpot_value != null) document.getElementById('euro-val').textContent = fmtMoney(e.jackpot_value);
-    if (e.last_draw_date)        document.getElementById('euro-draw-date').textContent = e.last_draw_date;
-    if (e.last_draw_numbers?.length) renderBalls('euro-balls', e.last_draw_numbers, e.last_draw_stars||[], 'star');
+  if(d.euromilhoes){
+    const e=d.euromilhoes;
+    if(e.jackpot_value!=null) document.getElementById('euro-val').textContent=fmtMoney(e.jackpot_value);
+    if(e.last_draw_date)      document.getElementById('euro-draw-date').textContent=e.last_draw_date;
+    if(e.last_draw_numbers?.length) renderBalls('euro-balls',e.last_draw_numbers,e.last_draw_stars||[],'star');
   }
-  if (d.totoloto) {
-    const t = d.totoloto;
-    if (t.jackpot_value != null) document.getElementById('loto-val').textContent = fmtMoney(t.jackpot_value);
-    if (t.last_draw_date)        document.getElementById('loto-draw-date').textContent = t.last_draw_date;
-    if (t.last_draw_numbers?.length) renderBalls('loto-balls', t.last_draw_numbers, t.last_draw_complementar!=null?[t.last_draw_complementar]:[], 'compl');
+  if(d.totoloto){
+    const t=d.totoloto;
+    if(t.jackpot_value!=null) document.getElementById('loto-val').textContent=fmtMoney(t.jackpot_value);
+    if(t.last_draw_date)      document.getElementById('loto-draw-date').textContent=t.last_draw_date;
+    if(t.last_draw_numbers?.length) renderBalls('loto-balls',t.last_draw_numbers,t.last_draw_complementar!=null?[t.last_draw_complementar]:[],'compl');
   }
 }
  
-// ── FETCH DO WORKER ───────────────────────────────────────────────────────────
 async function fetchData() {
-  setStatus('loading', 'A actualizar…');
-  try {
-    const res = await fetch(WORKER_URL);
-    if (!res.ok) throw new Error('Worker '+res.status);
-    const data = await res.json();
+  setStatus('loading','A actualizar…');
+  try{
+    const res=await fetch(WORKER_URL);
+    if(!res.ok) throw new Error('Worker '+res.status);
+    const data=await res.json();
     applyData(data);
-    // Recalcular próximos sorteios após fetch (podem ter mudado)
-    draws = { euro: nextEuro(), loto: nextLoto() };
+    draws={euro:nextEuro(),loto:nextLoto()};
     updateDrawLabels();
-    const now = new Date();
-    const hm = String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
-    setStatus('ok', 'Actualizado às '+hm);
-    document.getElementById('lastUpd').textContent = 'Actualizado às '+hm;
-  } catch(err) {
+    const now=new Date();
+    const hm=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+    setStatus('ok','Actualizado às '+hm);
+    document.getElementById('lastUpd').textContent='Actualizado às '+hm;
+  }catch(err){
     console.error(err);
-    setStatus('error', 'Erro · use ✏ Editar');
-    document.getElementById('lastUpd').textContent = 'Erro ao obter dados';
+    setStatus('error','Erro · use ✏ Editar');
+    document.getElementById('lastUpd').textContent='Erro ao obter dados';
   }
 }
  
-// ── MANUAL EDIT ───────────────────────────────────────────────────────────────
 function openModal()  { document.getElementById('modal').classList.add('open'); }
 function closeModal() { document.getElementById('modal').classList.remove('open'); }
 function parseNums(str) { return str.trim().split(/\s+/).map(Number).filter(n=>!isNaN(n)&&n>0); }
- 
 function saveManual() {
-  const d = { euromilhoes:{}, totoloto:{} };
-  const ev  = document.getElementById('m-euro-val').value.trim();
-  const edt = document.getElementById('m-euro-date').value.trim();
-  const en  = document.getElementById('m-euro-nums').value.trim();
-  const es  = document.getElementById('m-euro-stars').value.trim();
-  const lv  = document.getElementById('m-loto-val').value.trim();
-  const ldt = document.getElementById('m-loto-date').value.trim();
-  const ln  = document.getElementById('m-loto-nums').value.trim();
-  const lc  = document.getElementById('m-loto-compl').value.trim();
-  if(ev)  d.euromilhoes.jackpot_value      = Number(ev);
-  if(edt) d.euromilhoes.last_draw_date     = edt;
-  if(en)  d.euromilhoes.last_draw_numbers  = parseNums(en);
-  if(es)  d.euromilhoes.last_draw_stars    = parseNums(es);
-  if(lv)  d.totoloto.jackpot_value         = Number(lv);
-  if(ldt) d.totoloto.last_draw_date        = ldt;
-  if(ln)  d.totoloto.last_draw_numbers     = parseNums(ln);
-  if(lc)  d.totoloto.last_draw_complementar= Number(lc);
+  const d={euromilhoes:{},totoloto:{}};
+  const ev=document.getElementById('m-euro-val').value.trim();
+  const edt=document.getElementById('m-euro-date').value.trim();
+  const en=document.getElementById('m-euro-nums').value.trim();
+  const es=document.getElementById('m-euro-stars').value.trim();
+  const lv=document.getElementById('m-loto-val').value.trim();
+  const ldt=document.getElementById('m-loto-date').value.trim();
+  const ln=document.getElementById('m-loto-nums').value.trim();
+  const lc=document.getElementById('m-loto-compl').value.trim();
+  if(ev)  d.euromilhoes.jackpot_value=Number(ev);
+  if(edt) d.euromilhoes.last_draw_date=edt;
+  if(en)  d.euromilhoes.last_draw_numbers=parseNums(en);
+  if(es)  d.euromilhoes.last_draw_stars=parseNums(es);
+  if(lv)  d.totoloto.jackpot_value=Number(lv);
+  if(ldt) d.totoloto.last_draw_date=ldt;
+  if(ln)  d.totoloto.last_draw_numbers=parseNums(ln);
+  if(lc)  d.totoloto.last_draw_complementar=Number(lc);
   applyData(d);
-  const now = new Date();
-  const hm = String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  const now=new Date();
+  const hm=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
   setStatus('ok','Editado manualmente às '+hm);
   document.getElementById('lastUpd').textContent='Editado manualmente às '+hm;
-  ['m-euro-val','m-euro-date','m-euro-nums','m-euro-stars','m-loto-val','m-loto-date','m-loto-nums','m-loto-compl']
-    .forEach(id => document.getElementById(id).value='');
+  ['m-euro-val','m-euro-date','m-euro-nums','m-euro-stars','m-loto-val','m-loto-date','m-loto-nums','m-loto-compl'].forEach(id=>document.getElementById(id).value='');
   closeModal();
 }
-document.getElementById('modal').addEventListener('click', e => { if(e.target===e.currentTarget) closeModal(); });
+document.getElementById('modal').addEventListener('click',e=>{ if(e.target===e.currentTarget) closeModal(); });
  
-// ── CLOCK + COUNTDOWN ─────────────────────────────────────────────────────────
 function tick() {
-  const now = new Date();
-  document.getElementById('clock').textContent =
-    String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');
-  document.getElementById('euro-cd').textContent = countdown(draws.euro);
-  document.getElementById('loto-cd').textContent = countdown(draws.loto);
+  const now=new Date();
+  document.getElementById('clock').textContent=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('euro-cd').textContent=countdown(draws.euro);
+  document.getElementById('loto-cd').textContent=countdown(draws.loto);
+  if(now.getHours()===0&&now.getMinutes()===0&&now.getSeconds()===0) draws={euro:nextEuro(),loto:nextLoto()};
 }
-setInterval(tick, 1000); tick();
- 
-// Fetch imediato + cada hora
+setInterval(tick,1000); tick();
 fetchData();
-setInterval(fetchData, 60*60*1000);
+setInterval(fetchData,60*60*1000);
 </script>
 </body>
 </html>
