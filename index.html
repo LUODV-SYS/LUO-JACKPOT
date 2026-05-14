@@ -9,6 +9,10 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
     --orange-hi:    #FF7033;
+    --green-dark:   #C04A00;
+    --green-mid:    #1E5C36;
+    --footer-bg:    #1A4D2E;
+    --green-border: rgba(255,255,255,.12);
     --euro-gold:    #FFD700;
     --euro-gold-hi: #FFE566;
     --euro-gold-lo: #7A5A00;
@@ -18,87 +22,81 @@
     --loto-blue-lo: #075985;
     --text-hi:      #FFFFFF;
     --text-mid:     rgba(255,255,255,.55);
-    --text-lo:      rgba(255,255,255,.32);
+    --text-lo:      rgba(255,255,255,.35);
     --surface:      rgba(255,255,255,.06);
     --border:       rgba(255,255,255,.10);
   }
   html, body { width:100%; height:100%; overflow:hidden; font-family:'Barlow',sans-serif; }
  
-  /* ── BACKGROUND: laranja escuro → verde escuro, diagonal ── */
+  /* ── BACKGROUND ── */
   .bg-layer {
     position:fixed; inset:0; z-index:0; pointer-events:none;
-    /* Base diagonal: laranja escuro (esq/topo) → verde escuro (dir/baixo) */
     background: linear-gradient(135deg, #1A0A00 0%, #0A1A08 100%);
   }
-  /* Camadas de luz para dar profundidade */
   .bg-layer::before {
     content:''; position:absolute; inset:0;
     background:
-      /* laranja quente — canto superior esquerdo */
       radial-gradient(ellipse 75% 65% at -5% -5%,   rgba(200,65,0,.55)   0%, transparent 55%),
-      /* laranja suave — centro esquerdo */
-      radial-gradient(ellipse 55% 70% at 0%   55%,  rgba(160,45,0,.30)   0%, transparent 55%),
-      /* verde — canto inferior direito */
+      radial-gradient(ellipse 55% 70% at 0%   55%,  rgba(160,45,0,.28)   0%, transparent 55%),
       radial-gradient(ellipse 75% 65% at 105% 105%, rgba(0,100,30,.55)   0%, transparent 55%),
-      /* verde suave — centro direito */
-      radial-gradient(ellipse 55% 70% at 100% 45%,  rgba(0,80,20,.30)    0%, transparent 55%),
-      /* centro escuro para contraste máximo dos jackpots */
-      radial-gradient(ellipse 60% 50% at 50%  50%,  rgba(0,0,0,.35)      0%, transparent 70%);
+      radial-gradient(ellipse 55% 70% at 100% 45%,  rgba(0,80,20,.28)    0%, transparent 55%),
+      radial-gradient(ellipse 60% 50% at 50%  50%,  rgba(0,0,0,.30)      0%, transparent 70%);
     animation: bgBreath 12s ease-in-out infinite alternate;
   }
   @keyframes bgBreath { 0%{opacity:.7} 100%{opacity:1} }
- 
-  /* grain subtil */
   .bg-layer::after {
     content:''; position:absolute; inset:0;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-size: 160px 160px; opacity:.03; mix-blend-mode:overlay;
+    background-size:160px 160px; opacity:.03; mix-blend-mode:overlay;
   }
- 
   .dot-grid {
     position:fixed; inset:0; z-index:0; pointer-events:none;
-    background-image: radial-gradient(rgba(255,255,255,.055) 1px, transparent 1px);
+    background-image: radial-gradient(rgba(255,255,255,.05) 1px, transparent 1px);
     background-size: 38px 38px;
   }
  
   .screen { position:relative; z-index:1; width:100vw; height:100vh; display:grid; grid-template-rows:auto 1fr auto; }
  
-  /* ── HEADER ── */
+  /* ── HEADER — verde escuro sólido ── */
   .header {
     display:flex; align-items:center; justify-content:space-between;
-    padding:.6rem 2.2rem; border-bottom:1px solid rgba(255,255,255,.08);
-    background:rgba(0,0,0,.38); backdrop-filter:blur(20px); gap:1.5rem;
+    padding:.6rem 2.2rem;
+    background: var(--green-dark);
+    border-bottom: 1px solid rgba(255,255,255,.10);
+    gap:1.5rem;
   }
-  .logo-wrap img { height:40px; filter:brightness(0) invert(1); opacity:.9; display:block; }
+  .logo-wrap img { height:40px; filter:brightness(0) invert(1); opacity:.92; display:block; }
+ 
   .header-title {
     font-family:'Barlow Condensed',sans-serif;
-    font-size:1.55rem; font-weight:800; letter-spacing:.32em; text-transform:uppercase;
+    font-size:1.55rem; font-weight:800; letter-spacing:.30em; text-transform:uppercase;
     flex:1; text-align:center;
-    background:linear-gradient(90deg, #FF8C42, var(--euro-gold), #6EE7A0);
-    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    /* branco puro — máximo contraste sobre verde escuro */
+    color: #FFFFFF;
+    opacity: .90;
   }
+ 
   .header-right { display:flex; align-items:center; gap:.8rem; min-width:220px; justify-content:flex-end; }
   .status { display:flex; align-items:center; gap:.4rem; }
   .status-dot { width:7px; height:7px; border-radius:50%; background:#22C55E; box-shadow:0 0 8px #22C55E; animation:dotPulse 2.5s ease-in-out infinite; }
   .status-dot.loading { background:var(--orange-hi); box-shadow:0 0 8px var(--orange-hi); }
   .status-dot.error   { background:#EF4444; box-shadow:0 0 8px #EF4444; }
   @keyframes dotPulse { 0%,100%{opacity:1} 50%{opacity:.3} }
-  .status-txt { font-family:'Barlow Condensed',sans-serif; font-size:.72rem; font-weight:600; letter-spacing:.07em; color:var(--text-lo); white-space:nowrap; }
-  .clock { font-family:'Bebas Neue',cursive; font-size:1.35rem; letter-spacing:.1em; color:rgba(255,255,255,.45); }
+  .status-txt { font-family:'Barlow Condensed',sans-serif; font-size:.72rem; font-weight:600; letter-spacing:.07em; color:rgba(255,255,255,.45); white-space:nowrap; }
+  .clock { font-family:'Bebas Neue',cursive; font-size:1.35rem; letter-spacing:.1em; color:#FFFFFF; }
   .btn-refresh, .btn-edit { font-family:'Barlow Condensed',sans-serif; font-size:.72rem; font-weight:700; letter-spacing:.1em; padding:.3rem .75rem; border-radius:999px; cursor:pointer; border:none; transition:all .18s; text-transform:uppercase; }
-  .btn-refresh { background:rgba(255,255,255,.10); color:rgba(255,255,255,.5); border:1px solid rgba(255,255,255,.15); }
-  .btn-refresh:hover { background:rgba(255,255,255,.18); color:#fff; }
-  .btn-edit { background:rgba(232,80,10,.22); color:var(--orange-hi); border:1px solid rgba(232,80,10,.35); }
-  .btn-edit:hover { background:rgba(232,80,10,.38); color:#fff; }
+  .btn-refresh { background:rgba(255,255,255,.10); color:rgba(255,255,255,.55); border:1px solid rgba(255,255,255,.18); }
+  .btn-refresh:hover { background:rgba(255,255,255,.20); color:#fff; }
+  .btn-edit { background:rgba(232,80,10,.25); color:#FF8C55; border:1px solid rgba(232,80,10,.40); }
+  .btn-edit:hover { background:rgba(232,80,10,.42); color:#fff; }
  
   /* ── CARDS ── */
   .cards { display:grid; grid-template-rows:1fr 1fr; gap:.8rem; padding:.8rem 1.6rem; }
   .card {
     position:relative; background:var(--surface); border:1px solid var(--border);
     border-radius:18px; overflow:hidden; display:flex; flex-direction:column;
+    backdrop-filter:blur(6px);
     animation:cardIn .85s cubic-bezier(.16,1,.3,1) both;
-    /* glass morphism suave */
-    backdrop-filter: blur(6px);
   }
   .card:nth-child(1){ animation-delay:.06s; }
   .card:nth-child(2){ animation-delay:.2s; }
@@ -113,67 +111,78 @@
   .card.loto .card-glow { background:radial-gradient(var(--loto-blue),transparent 65%); animation-delay:3s; }
   @keyframes glowBreathe { 0%,100%{opacity:.06} 50%{opacity:.15} }
  
-  .card-top { position:relative; z-index:1; display:flex; align-items:center; gap:.8rem; padding:.6rem 1.8rem .1rem; flex-shrink:0; }
-  .gname { font-family:'Bebas Neue',cursive; font-size:clamp(1.5rem,2.5vw,2.3rem); letter-spacing:.05em; color:var(--text-hi); line-height:1; }
+  .card-top { position:relative; z-index:1; display:flex; align-items:center; gap:.8rem; padding:.5rem 1.8rem .0rem; flex-shrink:0; }
+  .gname { font-family:'Bebas Neue',cursive; font-size:clamp(1.4rem,2.3vw,2.1rem); letter-spacing:.05em; color:var(--text-hi); line-height:1; }
   .badge { font-family:'Barlow Condensed',sans-serif; font-size:.62rem; font-weight:800; letter-spacing:.18em; text-transform:uppercase; padding:.16rem .5rem; border-radius:999px; }
   .card.euro .badge { background:rgba(255,215,0,.14); color:var(--euro-gold); border:1px solid rgba(255,215,0,.28); }
   .card.loto .badge { background:rgba(56,189,248,.14); color:var(--loto-blue); border:1px solid rgba(56,189,248,.28); }
  
-  .card-jackpot { position:relative; z-index:1; flex:1; display:flex; flex-direction:column; align-items:flex-start; justify-content:center; padding:0 1.8rem; margin-top:-.3rem; }
-  .jlabel { font-family:'Barlow Condensed',sans-serif; font-size:.65rem; font-weight:700; letter-spacing:.25em; text-transform:uppercase; color:var(--text-lo); margin-bottom:.08rem; }
-  .jvalue { font-family:'Bebas Neue',cursive; font-size:clamp(5rem,13vh,12rem); line-height:.9; letter-spacing:.02em; }
+  /* ── JACKPOT — ainda maior, ocupa o máximo da altura disponível ── */
+  .card-jackpot { position:relative; z-index:1; flex:1; display:flex; flex-direction:column; align-items:flex-start; justify-content:center; padding:0 1.8rem; margin-top:-.4rem; }
+  .jlabel { font-family:'Barlow Condensed',sans-serif; font-size:.62rem; font-weight:700; letter-spacing:.25em; text-transform:uppercase; color:var(--text-lo); margin-bottom:.04rem; }
+  .jvalue {
+    font-family:'Bebas Neue',cursive;
+    /* altura do viewport como referência — sobe o clamp para ocupar mais espaço */
+    font-size:clamp(5.5rem, 16vh, 14rem);
+    line-height:.88; letter-spacing:.02em;
+  }
   .card.euro .jvalue { color:var(--euro-gold); animation:euroGlow 4s ease-in-out infinite; }
   .card.loto .jvalue { color:var(--loto-blue); animation:lotoGlow 4s ease-in-out infinite 2s; }
-  @keyframes euroGlow { 0%,100%{text-shadow:0 0 30px rgba(255,215,0,.18)} 50%{text-shadow:0 0 90px rgba(255,215,0,.75),0 0 30px rgba(255,215,0,.5)} }
-  @keyframes lotoGlow { 0%,100%{text-shadow:0 0 30px rgba(56,189,248,.18)} 50%{text-shadow:0 0 90px rgba(56,189,248,.75),0 0 30px rgba(56,189,248,.5)} }
-  .jcur { font-size:.38em; opacity:.62; vertical-align:super; margin-right:.05em; }
+  @keyframes euroGlow { 0%,100%{text-shadow:0 0 30px rgba(255,215,0,.18)} 50%{text-shadow:0 0 100px rgba(255,215,0,.78),0 0 35px rgba(255,215,0,.52)} }
+  @keyframes lotoGlow { 0%,100%{text-shadow:0 0 30px rgba(56,189,248,.18)} 50%{text-shadow:0 0 100px rgba(56,189,248,.78),0 0 35px rgba(56,189,248,.52)} }
+  .jcur { font-size:.36em; opacity:.60; vertical-align:super; margin-right:.04em; }
  
   .card-bottom { position:relative; z-index:1; flex-shrink:0; display:grid; grid-template-columns:1fr 1px 1fr; border-top:1px solid rgba(255,255,255,.08); }
-  .bottom-left { display:flex; align-items:center; justify-content:space-between; padding:.55rem 1.4rem .6rem 1.8rem; gap:1rem; }
+  .bottom-left { display:flex; align-items:center; justify-content:space-between; padding:.5rem 1.4rem .55rem 1.8rem; gap:1rem; }
   .bl-col { display:flex; flex-direction:column; gap:.1rem; }
-  .bl-label { font-family:'Barlow Condensed',sans-serif; font-size:.58rem; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--text-lo); }
-  .bl-val   { font-family:'Barlow Condensed',sans-serif; font-size:.88rem; font-weight:600; color:var(--text-mid); }
-  .countdown { font-family:'Bebas Neue',cursive; font-size:1.55rem; letter-spacing:.07em; line-height:1; }
+  .bl-label { font-family:'Barlow Condensed',sans-serif; font-size:.56rem; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--text-lo); }
+  .bl-val   { font-family:'Barlow Condensed',sans-serif; font-size:.86rem; font-weight:600; color:var(--text-mid); }
+  .countdown { font-family:'Bebas Neue',cursive; font-size:1.5rem; letter-spacing:.07em; line-height:1; }
   .card.euro .countdown { color:var(--euro-gold); }
   .card.loto .countdown { color:var(--loto-blue); }
-  .bottom-div { background:rgba(255,255,255,.08); margin:.45rem 0; }
-  .bottom-right { display:flex; align-items:center; padding:.5rem 1.8rem .5rem 1.4rem; gap:.65rem; }
-  .br-label { font-family:'Barlow Condensed',sans-serif; font-size:.58rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--text-lo); white-space:nowrap; flex-shrink:0; }
+  .bottom-div { background:rgba(255,255,255,.08); margin:.4rem 0; }
+  .bottom-right { display:flex; align-items:center; padding:.45rem 1.8rem .45rem 1.4rem; gap:.6rem; }
+  .br-label { font-family:'Barlow Condensed',sans-serif; font-size:.56rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--text-lo); white-space:nowrap; flex-shrink:0; }
  
-  .balls-row { display:flex; align-items:center; gap:.3rem; flex-wrap:nowrap; }
-  .ball { width:clamp(1.75rem,2.7vw,2.4rem); height:clamp(1.75rem,2.7vw,2.4rem); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Barlow Condensed',sans-serif; font-size:clamp(.68rem,1vw,.86rem); font-weight:800; animation:ballPop .5s cubic-bezier(.34,1.56,.64,1) both; flex-shrink:0; }
+  .balls-row { display:flex; align-items:center; gap:.28rem; flex-wrap:nowrap; }
+  .ball { width:clamp(1.7rem,2.6vw,2.3rem); height:clamp(1.7rem,2.6vw,2.3rem); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Barlow Condensed',sans-serif; font-size:clamp(.66rem,.98vw,.84rem); font-weight:800; animation:ballPop .5s cubic-bezier(.34,1.56,.64,1) both; flex-shrink:0; }
   .ball:nth-child(1){animation-delay:.10s} .ball:nth-child(2){animation-delay:.18s} .ball:nth-child(3){animation-delay:.26s} .ball:nth-child(4){animation-delay:.34s} .ball:nth-child(5){animation-delay:.42s} .ball:nth-child(6){animation-delay:.52s} .ball:nth-child(7){animation-delay:.60s}
   @keyframes ballPop { from{opacity:0;transform:scale(.25) rotate(-25deg)} to{opacity:1;transform:scale(1) rotate(0)} }
   .euro .ball.main { background:radial-gradient(circle at 33% 30%,var(--euro-gold-hi),#8A6000); color:#1a0d00; box-shadow:0 2px 10px rgba(255,215,0,.35); }
   .euro .ball.star { background:radial-gradient(circle at 33% 30%,#8EC8F8,var(--euro-star-dk)); color:#fff; box-shadow:0 2px 10px rgba(90,171,248,.35); }
   .loto .ball.main { background:radial-gradient(circle at 33% 30%,var(--loto-blue-hi),#0A4F78); color:#fff; box-shadow:0 2px 10px rgba(56,189,248,.35); }
   .loto .ball.compl{ background:radial-gradient(circle at 33% 30%,#94A3B8,#2D3748); color:#fff; box-shadow:0 2px 8px rgba(0,0,0,.35); }
-  .ball-sep { font-family:'Bebas Neue',cursive; font-size:.95rem; color:rgba(255,255,255,.25); flex-shrink:0; margin:0 .04rem; }
+  .ball-sep { font-family:'Bebas Neue',cursive; font-size:.92rem; color:rgba(255,255,255,.25); flex-shrink:0; margin:0 .03rem; }
  
   .skel { background:linear-gradient(90deg,rgba(255,255,255,.06) 25%,rgba(255,255,255,.12) 50%,rgba(255,255,255,.06) 75%); background-size:200% 100%; animation:shimmer 1.6s infinite; border-radius:5px; display:inline-block; }
   @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
  
-  /* ── FOOTER ── */
-  .footer { display:flex; align-items:center; justify-content:center; gap:.65rem; padding:.42rem; border-top:1px solid rgba(255,255,255,.07); background:rgba(0,0,0,.28); }
-  .ftxt { font-family:'Barlow',sans-serif; font-size:.63rem; color:rgba(255,255,255,.22); letter-spacing:.07em; text-transform:uppercase; }
-  .fdot { color:rgba(255,255,255,.12); }
-  .fupd { font-family:'Barlow Condensed',sans-serif; font-size:.7rem; color:rgba(255,255,255,.28); letter-spacing:.05em; }
+  /* ── FOOTER — verde escuro, igual ao header ── */
+  .footer {
+    display:flex; align-items:center; justify-content:center; gap:.65rem;
+    padding:.42rem;
+    background: var(--footer-bg);
+    border-top: 1px solid rgba(255,255,255,.10);
+  }
+  .ftxt { font-family:'Barlow',sans-serif; font-size:.63rem; color:rgba(255,255,255,.75); letter-spacing:.07em; text-transform:uppercase; }
+  .fdot { color:rgba(255,255,255,.40); }
+  .fupd { font-family:'Barlow Condensed',sans-serif; font-size:.7rem; color:rgba(255,255,255,.80); letter-spacing:.05em; }
  
   /* ── MODAL ── */
   .overlay { display:none; position:fixed; inset:0; z-index:500; background:rgba(0,0,0,.88); backdrop-filter:blur(10px); align-items:center; justify-content:center; }
   .overlay.open { display:flex; }
-  .modal { background:#0E1A0E; border:1px solid rgba(255,255,255,.13); border-radius:20px; padding:2rem 2.2rem; width:560px; max-width:95vw; box-shadow:0 30px 80px rgba(0,0,0,.7); }
+  .modal { background:var(--green-mid); border:1px solid rgba(255,255,255,.13); border-radius:20px; padding:2rem 2.2rem; width:560px; max-width:95vw; box-shadow:0 30px 80px rgba(0,0,0,.7); }
   .modal h2 { font-family:'Bebas Neue',cursive; font-size:1.8rem; letter-spacing:.06em; color:#fff; margin-bottom:.3rem; }
   .modal-sub { font-family:'Barlow Condensed',sans-serif; font-size:.75rem; color:var(--text-lo); letter-spacing:.08em; margin-bottom:1.5rem; }
   .modal-section { font-family:'Barlow Condensed',sans-serif; font-size:.68rem; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:var(--text-lo); margin:1.1rem 0 .6rem; padding-bottom:.35rem; border-bottom:1px solid rgba(255,255,255,.08); }
   .modal-grid { display:grid; grid-template-columns:1fr 1fr; gap:.8rem; }
-  .fg label { display:block; font-family:'Barlow Condensed',sans-serif; font-size:.68rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.38); margin-bottom:.28rem; }
-  .fg input { width:100%; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12); border-radius:8px; padding:.5rem .75rem; color:#fff; font-family:'Barlow',sans-serif; font-size:.95rem; outline:none; transition:border-color .2s; }
-  .fg input:focus { border-color:rgba(255,255,255,.3); }
+  .fg label { display:block; font-family:'Barlow Condensed',sans-serif; font-size:.68rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.40); margin-bottom:.28rem; }
+  .fg input { width:100%; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.13); border-radius:8px; padding:.5rem .75rem; color:#fff; font-family:'Barlow',sans-serif; font-size:.95rem; outline:none; transition:border-color .2s; }
+  .fg input:focus { border-color:rgba(255,255,255,.32); }
   .modal-actions { display:flex; gap:.7rem; margin-top:1.6rem; justify-content:flex-end; }
   .mbtn { font-family:'Barlow Condensed',sans-serif; font-size:.9rem; font-weight:700; letter-spacing:.07em; padding:.5rem 1.3rem; border-radius:8px; cursor:pointer; border:none; transition:all .18s; }
   .mbtn-cancel { background:rgba(255,255,255,.08); color:rgba(255,255,255,.5); }
-  .mbtn-cancel:hover { background:rgba(255,255,255,.14); color:#fff; }
+  .mbtn-cancel:hover { background:rgba(255,255,255,.15); color:#fff; }
   .mbtn-save { background:var(--euro-gold); color:#1a0d00; font-weight:800; }
   .mbtn-save:hover { background:var(--euro-gold-hi); }
 </style>
@@ -214,11 +223,11 @@
         <div class="bottom-right">
           <span class="br-label">Último Sorteio<br><span id="euro-draw-date" style="color:rgba(255,255,255,.22);font-weight:400;letter-spacing:.04em">—</span></span>
           <div class="balls-row" id="euro-balls">
-            <span class="skel" style="width:2.1rem;height:2.1rem;border-radius:50%;display:inline-block">&nbsp;</span>
-            <span class="skel" style="width:2.1rem;height:2.1rem;border-radius:50%;display:inline-block">&nbsp;</span>
-            <span class="skel" style="width:2.1rem;height:2.1rem;border-radius:50%;display:inline-block">&nbsp;</span>
-            <span class="skel" style="width:2.1rem;height:2.1rem;border-radius:50%;display:inline-block">&nbsp;</span>
-            <span class="skel" style="width:2.1rem;height:2.1rem;border-radius:50%;display:inline-block">&nbsp;</span>
+            <span class="skel" style="width:2rem;height:2rem;border-radius:50%;display:inline-block">&nbsp;</span>
+            <span class="skel" style="width:2rem;height:2rem;border-radius:50%;display:inline-block">&nbsp;</span>
+            <span class="skel" style="width:2rem;height:2rem;border-radius:50%;display:inline-block">&nbsp;</span>
+            <span class="skel" style="width:2rem;height:2rem;border-radius:50%;display:inline-block">&nbsp;</span>
+            <span class="skel" style="width:2rem;height:2rem;border-radius:50%;display:inline-block">&nbsp;</span>
           </div>
         </div>
       </div>
@@ -240,11 +249,11 @@
         <div class="bottom-right">
           <span class="br-label">Último Sorteio<br><span id="loto-draw-date" style="color:rgba(255,255,255,.22);font-weight:400;letter-spacing:.04em">—</span></span>
           <div class="balls-row" id="loto-balls">
-            <span class="skel" style="width:2.1rem;height:2.1rem;border-radius:50%;display:inline-block">&nbsp;</span>
-            <span class="skel" style="width:2.1rem;height:2.1rem;border-radius:50%;display:inline-block">&nbsp;</span>
-            <span class="skel" style="width:2.1rem;height:2.1rem;border-radius:50%;display:inline-block">&nbsp;</span>
-            <span class="skel" style="width:2.1rem;height:2.1rem;border-radius:50%;display:inline-block">&nbsp;</span>
-            <span class="skel" style="width:2.1rem;height:2.1rem;border-radius:50%;display:inline-block">&nbsp;</span>
+            <span class="skel" style="width:2rem;height:2rem;border-radius:50%;display:inline-block">&nbsp;</span>
+            <span class="skel" style="width:2rem;height:2rem;border-radius:50%;display:inline-block">&nbsp;</span>
+            <span class="skel" style="width:2rem;height:2rem;border-radius:50%;display:inline-block">&nbsp;</span>
+            <span class="skel" style="width:2rem;height:2rem;border-radius:50%;display:inline-block">&nbsp;</span>
+            <span class="skel" style="width:2rem;height:2rem;border-radius:50%;display:inline-block">&nbsp;</span>
           </div>
         </div>
       </div>
@@ -253,7 +262,7 @@
  
   <footer class="footer">
     <span class="ftxt">Valores meramente indicativos</span><span class="fdot">·</span>
-    <span class="ftxt">Confirme em scml.pt</span><span class="fdot">·</span>
+    <span class="ftxt">Confirme em jogossantacasa.pt</span><span class="fdot">·</span>
     <span class="fupd" id="lastUpd">A carregar dados…</span><span class="fdot">·</span>
     <span class="ftxt">Jogue com responsabilidade</span>
   </footer>
@@ -295,7 +304,7 @@ function nextDrawDate(drawDow, drawHour, drawMinute) {
   for (let addDays = 0; addDays <= 7; addDays++) {
     const candidate = new Date(now.getTime() + addDays * 86400000);
     const lParts = new Intl.DateTimeFormat('en-US', {
-      timeZone: 'Europe/Lisbon', weekday:'short', year:'numeric',
+      timeZone:'Europe/Lisbon', weekday:'short', year:'numeric',
       month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', hour12:false
     }).formatToParts(candidate);
     const lp = {};
@@ -311,13 +320,11 @@ function nextDrawDate(drawDow, drawHour, drawMinute) {
   }
   return null;
 }
- 
 function getLisboaOffset(date) {
   const utcStr = date.toLocaleString('en-US', { timeZone:'UTC' });
   const lisStr = date.toLocaleString('en-US', { timeZone:'Europe/Lisbon' });
   return (new Date(lisStr) - new Date(utcStr)) / 60000;
 }
- 
 function fmtDrawDate(d) {
   if (!d) return '—';
   return d.toLocaleDateString('pt-PT', { timeZone:'Europe/Lisbon', weekday:'long', day:'numeric', month:'short' });
@@ -329,12 +336,10 @@ function countdown(target) {
   const h=Math.floor(diff/3600000), m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
   return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
 }
- 
 function nextEuro() { const t=nextDrawDate(2,19,0), f=nextDrawDate(5,19,0); if(!t)return f; if(!f)return t; return t<f?t:f; }
 function nextLoto() { const q=nextDrawDate(3,20,30), s=nextDrawDate(6,20,30); if(!q)return s; if(!s)return q; return q<s?q:s; }
  
 let draws = { euro:nextEuro(), loto:nextLoto() };
- 
 function updateDrawLabels() {
   document.getElementById('euro-next-draw').textContent = fmtDrawDate(draws.euro);
   document.getElementById('loto-next-draw').textContent = fmtDrawDate(draws.loto);
@@ -349,12 +354,10 @@ function renderBalls(id, mains, specials, specClass) {
     specials.forEach(n=>{ const b=document.createElement('div'); b.className='ball '+specClass; b.textContent=n; row.appendChild(b); });
   }
 }
- 
 function setStatus(state,txt) {
   document.getElementById('statusDot').className='status-dot'+(state==='ok'?'':' '+state);
   document.getElementById('statusTxt').textContent=txt;
 }
- 
 function applyData(d) {
   if(d.euromilhoes){
     const e=d.euromilhoes;
@@ -369,7 +372,6 @@ function applyData(d) {
     if(t.last_draw_numbers?.length) renderBalls('loto-balls',t.last_draw_numbers,t.last_draw_complementar!=null?[t.last_draw_complementar]:[],'compl');
   }
 }
- 
 async function fetchData() {
   setStatus('loading','A actualizar…');
   try{
@@ -389,7 +391,6 @@ async function fetchData() {
     document.getElementById('lastUpd').textContent='Erro ao obter dados';
   }
 }
- 
 function openModal()  { document.getElementById('modal').classList.add('open'); }
 function closeModal() { document.getElementById('modal').classList.remove('open'); }
 function parseNums(str) { return str.trim().split(/\s+/).map(Number).filter(n=>!isNaN(n)&&n>0); }
